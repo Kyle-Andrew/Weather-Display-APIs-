@@ -1,0 +1,79 @@
+<%- include('header'); -%>
+<div class="header-div">
+  <h1 class="main-heading"><%= city %></h1>
+</div>
+
+<div class="grid-container">
+  <div class="icon-display flex-container">
+    <div class="description-div">
+      <p class="description-heading"><%= weatherDescription %></p>
+    </div>
+
+    <div class="icon-div">
+      <img
+        class="weather-icon"
+        src="<%= weatherIconURL %>"
+        alt="weather icon"
+      />
+    </div>
+  </div>
+
+  <div class="temperature-display flex-container">
+    <div class="data-div">
+      <p class="data-heading">Temperature:</p>
+      <p><%= temperature %> &degC</p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Pressure:</p>
+      <p><%= pressure %> hPa</p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Humidity:</p>
+      <p><%= humidity %>%</p>
+    </div>
+  </div>
+
+  <div class="wind-display flex-container">
+    <div class="data-div">
+      <p class="data-heading">Wind Speed:</p>
+      <p><%= windSpeed %> meter/sec</p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Wind Direction:</p>
+      <p><%= windDirection %>&deg</p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Cloudiness:</p>
+      <p><%= cloudiness %>%</p>
+    </div>
+  </div>
+
+  <div class="precipitation-display flex-container">
+    <div class="data-div">
+      <p class="data-heading">Visibility:</p>
+      <p><%= visibility %>m</p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Rainfall:</p>
+      <p><%= rainfall %></p>
+    </div>
+
+    <div class="data-div">
+      <p class="data-heading">Snowfall:</p>
+      <p><%= snowfall %></p>
+    </div>
+  </div>
+</div>
+
+<div class="footer-div">
+  <form action="/" method="redirect">
+    <button class="submit-button" type="submit">Submit new query</button>
+  </form>
+</div>
+
+<%- include('footer'); -%>
