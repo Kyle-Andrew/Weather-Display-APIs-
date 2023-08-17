@@ -1,11 +1,13 @@
-// API Key: 11d0b9ecfe6585e3f89cfd5313bb1ded
-var weatherData = {};
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
 
 const bodyParser = require("body-parser");
-const https = require("https");
+
+const axios = require("axios");
+
+const _ = require("lodash");
 
 app.set("view engine", "ejs");
 
@@ -16,68 +18,44 @@ app.get("/", function (req, res) {
   res.render("index");
 });
 
-app.post("/", function (req, res) {
-  const weatherDataEndpoint = "https://api.openweathermap.org/data/2.5/weather";
-  const query = "?q=" + req.body.cityQuery;
-  const appID = "&appid=11d0b9ecfe6585e3f89cfd5313bb1ded";
-  const units = "&units=metric";
+app.post("/", async (req, res) => {
+  const config = {
+    params: {
+      q: req.body.cityQuery,
+      appID: process.env.APP_ID,
+      units: "metric",
+    },
+  };
 
-  var weatherDataURL = weatherDataEndpoint + query + appID + units;
+  try {
+    const response = await axios.get(
+      "https://api.openweathermap.org/data/2.5/weather",
+      config
+    );
 
-  https.get(weatherDataURL, function (response) {
-    response.on("data", function (data) {
-      weatherData = JSON.parse(data);
-      console.log(weatherData);
+    const data = response.data;
 
-      if (weatherData.cod !== 200) {
-        res.redirect("/");
-      } else {
-        const city = weatherData.name;
+    const { rain = "No Data Available.", snow = "No Data Available." } = data;
 
-        let weatherDescription = weatherData.weather[0].description;
-        weatherDescription = weatherDescription.slice(0, 1).toUpperCase() + weatherDescription.slice(1, weatherDescription.length);
+    let weatherData = {
+      city: data.name,
+      weatherDescription: _.capitalize(data.weather[0].description),
+      icon: data.weather[0].icon,
+      temperature: data.main.temp,
+      pressure: data.main.pressure,
+      humidity: data.main.humidity,
+      windSpeed: data.wind.speed,
+      windDirection: data.wind.deg,
+      cloudiness: data.clouds.all,
+      visibility: data.visibility,
+      rainfall: rain,
+      snowfall: snow,
+    };
 
-        const weatherIconURL = "https://openweathermap.org/img/wn/" + weatherData.weather[0].icon + "@4x.png";
-        const temperature = weatherData.main.temp;
-        const pressure = weatherData.main.pressure;
-        const humidity = weatherData.main.humidity;
-        const windSpeed = weatherData.wind.speed;
-        const windDirection = weatherData.wind.deg;
-        const cloudiness = weatherData.clouds.all;
-        const visibility = weatherData.visibility;
-
-        let rainfall;
-        let snowfall;
-
-        if ("rain" in weatherData) {
-          rainfall = weatherData.rain["1h"] + " mm";
-        } else {
-          rainfall = "Data is currently unavailable";
-        }
-
-        if ("snow" in weatherData) {
-          snowfall = weatherData.snow["1h"] + " mm";
-        } else {
-          snowfall = "Data is currently unavailable";
-        }
-
-        res.render("weather", {
-          city: city,
-          weatherDescription: weatherDescription,
-          weatherIconURL: weatherIconURL,
-          temperature: temperature,
-          pressure: pressure,
-          humidity: humidity,
-          windSpeed: windSpeed,
-          windDirection: windDirection,
-          cloudiness: cloudiness,
-          visibility: visibility,
-          rainfall: rainfall,
-          snowfall: snowfall,
-        });
-      }
-    });
-  });
+    res.render("weather", { weatherData: weatherData });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(3000, function () {

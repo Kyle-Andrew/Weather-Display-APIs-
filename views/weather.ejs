@@ -1,18 +1,18 @@
 <%- include('header'); -%>
 <div class="header-div">
-  <h1 class="main-heading"><%= city %></h1>
+  <h1 class="main-heading"><%= weatherData.city %></h1>
 </div>
 
 <div class="grid-container">
   <div class="icon-display flex-container">
     <div class="description-div">
-      <p class="description-heading"><%= weatherDescription %></p>
+      <p class="description-heading"><%= weatherData.weatherDescription %></p>
     </div>
 
     <div class="icon-div">
       <img
         class="weather-icon"
-        src="<%= weatherIconURL %>"
+        src="https://openweathermap.org/img/wn/<%= weatherData.icon %>@4x.png"
         alt="weather icon"
       />
     </div>
@@ -21,51 +21,61 @@
   <div class="temperature-display flex-container">
     <div class="data-div">
       <p class="data-heading">Temperature:</p>
-      <p><%= temperature %> &degC</p>
+      <p><%= weatherData.temperature %> &degC</p>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Pressure:</p>
-      <p><%= pressure %> hPa</p>
+      <p><%= weatherData.pressure %> hPa</p>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Humidity:</p>
-      <p><%= humidity %>%</p>
+      <p><%= weatherData.humidity %>%</p>
     </div>
   </div>
 
   <div class="wind-display flex-container">
     <div class="data-div">
       <p class="data-heading">Wind Speed:</p>
-      <p><%= windSpeed %> meter/sec</p>
+      <p><%= weatherData.windSpeed %> meter/sec</p>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Wind Direction:</p>
-      <p><%= windDirection %>&deg</p>
+      <p><%= weatherData.windDirection %>&deg</p>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Cloudiness:</p>
-      <p><%= cloudiness %>%</p>
+      <p><%= weatherData.cloudiness %>%</p>
     </div>
   </div>
 
   <div class="precipitation-display flex-container">
     <div class="data-div">
       <p class="data-heading">Visibility:</p>
-      <p><%= visibility %>m</p>
+      <p><%= weatherData.visibility %>m</p>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Rainfall:</p>
-      <p><%= rainfall %></p>
+
+      <% if (weatherData.rainfall !== "No Data Available.") { %>
+      <p><%= weatherData.rainfall['1h'] %> mm</p>
+      <% } else { %>
+      <p><%= weatherData.rainfall %></p>
+      <% } %>
     </div>
 
     <div class="data-div">
       <p class="data-heading">Snowfall:</p>
-      <p><%= snowfall %></p>
+
+      <% if (weatherData.snowfall !== "No Data Available.") { %>
+      <p><%= weatherData.snowfall['1h'] %> mm</p>
+      <% } else { %>
+      <p><%= weatherData.snowfall %></p>
+      <% } %>
     </div>
   </div>
 </div>
